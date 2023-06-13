@@ -3,9 +3,9 @@ import React, { useState, useEffect } from 'react'
 // Material UI Imports
 import { Backdrop, Fade, Modal } from '@mui/material'
 import { ModalCircularProgress, QuoteGeneratorModalCon, QuoteGeneratorModalInnerCon, QuoteGeneratorSubTitle, QuoteGeneratorTitle } from './QuoteGeneratorElements';
-import ImageBlob from '../animations/ImageBlob';
-import { ImageBlobCon } from '../animations/AnimationElements';
-import AnimatedDownloadButton from '../animations/AnimatedDownloadButton';
+import ImageBlob from '../Animations/imageBlob';
+import { ImageBlobCon } from '../Animations/AnimationElements';
+import AnimatedDownloadButton from '../Animations/AnimatedDownloadButton';
 
 interface QuoteGeneratorModalProps {
     open: boolean,
@@ -30,7 +30,7 @@ const QuoteGeneratorModal = ({
 }: QuoteGeneratorModalProps) => {
 
     const wiseDevQuote = '"If you can center a div, anything is possible."';
-    const wiseDevQuoteAuthor = "- a wise senior software engineer";
+    const wiseDevQuoteAuthor = "- a wise Junior software engineer";
 
     const [blobUrl, setBlobUrl] = useState<string | null>(null);
 

@@ -12,7 +12,7 @@ import QuoteGeneratorModal from '@/Components/QuoteGenerator'
 import Clouds1 from '../Assets/cloud-and-thunder.png'
 import Clouds2 from '../Assets/cloudy-weather.png'
 import { API } from 'aws-amplify'
-import { quotesQueryName } from '@/src/graphql/queries'
+import { generateAQuote, quotesQueryName } from '@/src/graphql/queries'
 import { useEffect, useState } from 'react'
 import { GraphQLResult } from '@aws-amplify/api-graphql'
 
@@ -33,6 +33,7 @@ function isGraphQLResultForquotesQueryName(response: any): response is GraphQLRe
 }> {
   return response.data && response.data.quotesQueryName && response.data.quotesQueryName.items;
 }
+
 
 
 
@@ -83,6 +84,41 @@ export default function Home() {
   const handleOpenGenerator = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     setOpenGenerator(true);
+
+    try {
+      // Run Lambda Function
+      const runFunction = "runFunction";
+      const runFunctionStringified = JSON.stringify(runFunction);
+      const response = await API.graphql<GenerateAQuoteData>({
+        query: generateAQuote,
+        authMode: "AWS_IAM",
+        variables: {
+          input: runFunctionStringified,
+        },
+      });
+      const responseStringified = JSON.stringify(response);
+      const responseReStringified = JSON.stringify(responseStringified);
+      const bodyIndex = responseReStringified.indexOf("body=") + 5;
+      const bodyAndBase64 = responseReStringified.substring(bodyIndex);
+      const bodyArray = bodyAndBase64.split(",");
+      const body = bodyArray[0];
+      console.log(body);
+      setQuoteReceived(body);
+
+      // End state:
+      setProcessingQuote(false);
+
+      // Fetch if any new quotes were generated from counter
+      updateQuoteInfo();
+       
+      // setProcessingQuote(false);
+      // setTimeout(() => {
+      //   setProcessingQuote(false);
+      // }, 3000);
+    } catch (error) {
+      console.log('error generating quote:', error);
+      setProcessingQuote(false);
+    }
   }
 
   return (
